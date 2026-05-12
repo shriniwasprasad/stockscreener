@@ -1,23 +1,45 @@
 # Indian Stock Screener Pro
 
-A real-time stock screening application for Indian NSE stocks with technical analysis, buy/sell recommendations, and interactive charts.
+A real-time stock screening application for Indian NSE stocks with two powerful screening modes: **Classic Screener** and **Momentum Screener**.
 
 ## 📊 Project Overview
 
-This application helps investors and traders identify potential stock picks based on:
+This application helps investors and traders identify potential stock picks using two different strategies:
 
+### 🎯 Mode 1: Classic Screener
 - **Fundamental Filters**: P/E Ratio, Market Cap classification
 - **Technical Indicators**: RSI, MACD, Moving Averages (SMA 20, 50, 200)
 - **Volume Analysis**: Volume spikes relative to 20-day average
 - **Expert Recommendations**: Score-based buy/sell signals with target and stop-loss
 
+### 📈 Mode 2: Momentum Screener (Nifty 200 Momentum 30)
+Based on **Investors Way Swing Trading Framework - Strategy 1**
+
+**Layer 1 - Market Regime:**
+- Uptrend: Close > SMA50 AND Close > SMA200
+- Golden Cross: SMA50 > SMA200
+- Base Rising: SMA50 > 6 weeks ago SMA50
+
+**Layer 2 - Volatility Filter:**
+- ATR: 1.5% - 5% of price
+
+**Layer 3 - Signal Detection:**
+- Fresh Breakout: Close > 52W High AND Yesterday Close < Yesterday 52W High AND Volume > 2x avg50
+- Near Breakout: Within 3% of 52W High AND Volume < avg20 (consolidating)
+
+**Exit Rules:**
+- Trail Stop: 2 consecutive closes below 10-EMA
+- Time Stop: 15 trading days
+
 ### Features
 
+- ✅ **Dual Mode Screener**: Switch between Classic and Momentum modes
 - ✅ Real-time data from NSE (India) via yfinance
 - ✅ 200+ stocks including Large Cap, Mid Cap, and Small Cap
 - ✅ Sector-wise filtering (Finance, IT, FMCG, Pharma, etc.)
-- ✅ Interactive charts (Candlestick, MACD, RSI, SMA)
-- ✅ Configurable target % and stop-loss %
+- ✅ Interactive charts (Price+SMA, MACD, RSI)
+- ✅ Buy/Sell timing predictions with targets and stop-loss
+- ✅ GTT (Good Till Trigger) target calculations for near breakout stocks
 - ✅ Auto-refresh capability
 - ✅ Professional UI with color-coded recommendations
 
@@ -84,281 +106,119 @@ Open your browser and navigate to:
 - **Local**: http://localhost:8501
 - **Network**: http://192.168.1.100:8501
 
-## 🖥️ Starting and Stopping the Server
+## 🖥️ How to Use
 
-### Start the Server
+### Selecting Screener Mode
 
-**Windows (PowerShell):**
-```powershell
-# Navigate to project folder
-cd D:\inter\new_learning\python\stockscreener
+Use the sidebar radio button to switch between:
+- **📊 Classic Screener**: RSI/MACD/SMA filters, score-based ranking
+- **🎯 Momentum Screener**: Nifty 200 Momentum 30 breakout strategy
 
-# Activate virtual environment
-.venv\Scripts\activate
+### Classic Screener Mode
 
-# Run the application
-streamlit run app.py --server.port 8501
+1. **Select Filters** (Sidebar)
+   - **Cap Type**: Large Cap / Mid Cap / Small Cap
+   - **Sector**: Choose industries (Finance, IT, Pharma, etc.)
+   - **Technical Filters**: Adjust P/E, RSI, Volume thresholds
+   - **Target/Stop Loss**: Set your risk parameters
 
-# Or run without activating (using full path)
-.venv\Scripts\streamlit.exe run app.py --server.port 8501
-```
+2. **Review Results**
+   - Filtered Results Table with all matching stocks
+   - Top 5 Expert Picks with buy recommendations
+   - Detailed Analysis with interactive charts
 
-**Windows (Command Prompt):**
-```cmd
-cd D:\inter\new_learning\python\stockscreener
-.venv\Scripts\activate.bat
-streamlit run app.py --server.port 8501
-```
+3. **Analyze Charts**
+   - Price + SMA: Price movement with 20 & 50 day moving averages
+   - MACD: Trend momentum indicator
+   - RSI: Overbought/oversold signals
 
-**Mac/Linux:**
-```bash
-cd /path/to/stockscreener
-source .venv/bin/activate
-streamlit run app.py --server.port 8501
-```
+### Momentum Screener Mode
 
-### Stop the Server
+1. **Select Signal Type**
+   - **BREAKOUT**: Fresh 52-week high breakouts
+   - **NEAR BREAKOUT**: Stocks within 3% of 52-week high
 
-The server runs in your terminal. To stop it:
+2. **Review Results**
+   - Results Table with Buy Zone, Stop Loss, Targets, R:R
+   - Top Momentum Picks cards
+   - Detailed Buy/Sell Timing Analysis
 
-1. **Press `Ctrl + C`** in the terminal window where the server is running
-
-2. **Or close the terminal** - this will stop the server
-
-3. **Or kill the process manually**:
-
-**Windows (PowerShell):**
-```powershell
-# Kill all Python processes (be careful!)
-Get-Process -Name python | Stop-Process -Force
-
-# Or kill specific Streamlit process
-Get-Process | Where-Object { $_.CommandLine -like "*streamlit*" } | Stop-Process -Force
-```
-
-**Windows (Command Prompt):**
-```cmd
-taskkill /F /IM python.exe
-```
-
-**Mac/Linux:**
-```bash
-pkill -f "streamlit run"
-# or
-killall python
-```
-
-### Verify Server Status
-
-After starting, you should see:
-```
-Uvicorn server started on 0.0.0.0:8501
-
-You can now view your Streamlit app in your browser.
-Local URL: http://localhost:8501
-Network URL: http://192.168.1.100:8501
-```
-
-## 🧹 Clearing Cache
-
-### Why Clear Cache?
-
-If you encounter issues like:
-- Stale stock data
-- Old filter settings not updating
-- Charts not loading properly
-
-### Method 1: Streamlit Clear Cache (In-App)
-
-Streamlit caches some data automatically. To force a fresh scan:
-
-1. Click the **three dots (⋮)** in the top-right corner of the Streamlit app
-2. Click **"Clear cache"** (if available)
-3. Or simply press `Ctrl + R` (Windows) / `Cmd + R` (Mac) to hard refresh your browser
-
-### Method 2: Restart the Server
-
-```bash
-# Stop the current server (Ctrl + C)
-# Then restart:
-
-streamlit run app.py --server.port 8501
-```
-
-### Method 3: Clear Python Cache Files
-
-**Windows (PowerShell):**
-```powershell
-# Remove __pycache__ directories
-Get-ChildItem -Recurse -Directory -Filter "__pycache__" | Remove-Item -Recurse -Force
-
-# Remove .pyc files
-Get-ChildItem -Recurse -Filter "*.pyc" | Remove-Item -Force
-```
-
-**Mac/Linux:**
-```bash
-find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null
-find . -name "*.pyc" -delete
-```
-
-### Method 4: Clear yfinance Data Cache
-
-yfinance stores temporary data in different locations:
-
-**Windows (PowerShell):**
-```powershell
-# Method 1: Clear Temp folder yfinance cache
-Remove-Item -Path "$env:LOCALAPPDATA\Temp\yfinance" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Method 2: Clear yfinance cache in AppData
-$yfCache = "$env:LOCALAPPDATA\Packages\PythonSoftwareFoundation.Python*"
-Get-ChildItem -Path $yfCache -Recurse -Directory -Filter "yfinance" -ErrorAction SilentlyContinue | ForEach-Object {
-    Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
-}
-
-# Method 3: Clear all Python cached packages
-Remove-Item -Path "$env:LOCALAPPDATA\pip\cache" -Recurse -Force -ErrorAction SilentlyContinue
-```
-
-**Windows (Command Prompt):**
-```cmd
-:: Clear yfinance temp cache
-del /s /q "%LOCALAPPDATA%\Temp\yfinance*" 2>nul
-
-:: Clear pip cache
-del /s /q "%LOCALAPPDATA%\pip\cache" 2>nul
-```
-
-**Mac/Linux:**
-```bash
-# Remove yfinance cache
-rm -rf ~/Library/Caches/yfinance/
-
-# Also clear pip cache
-rm -rf ~/.cache/pip/
-```
-
-### Method 5: Fresh Start (Complete Reset)
-
-**Windows (PowerShell):**
-```powershell
-# 1. Stop the server (Ctrl + C)
-
-# 2. Delete cache folders
-Remove-Item -Path ".streamlit" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "__pycache__" -Recurse -Force -ErrorAction SilentlyContinue
-Get-ChildItem -Filter "*.pyc" -Recurse | Remove-Item -Force
-
-# 3. Clear Streamlit config cache
-Remove-Item -Path "$env:APPDATA\Streamlit\config.toml" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "$env:APPDATA\Streamlit\credentials.toml" -Force -ErrorAction SilentlyContinue
-
-# 4. Restart the server
-streamlit run app.py --server.port 8501
-```
-
-**Mac/Linux:**
-```bash
-# 1. Stop the server (Ctrl + C)
-
-# 2. Delete cache folders
-rm -rf .streamlit/
-rm -rf __pycache__/
-rm -rf ~/.cache/streamlit/
-
-# 3. Restart the server
-streamlit run app.py --server.port 8501
-```
-
-### Quick Cache Clear Script (Windows)
-
-Create a file `clear_cache.ps1` and run it:
-
-```powershell
-# clear_cache.ps1
-Write-Host "Clearing caches..." -ForegroundColor Yellow
-
-# Clear Python cache
-Get-ChildItem -Recurse -Directory -Filter "__pycache__" -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-Get-ChildItem -Recurse -Filter "*.pyc" -ErrorAction SilentlyContinue | Remove-Item -Force -ErrorAction SilentlyContinue
-
-# Clear Streamlit cache
-Remove-Item -Path ".streamlit" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Clear pip cache
-Remove-Item -Path "$env:LOCALAPPDATA\pip\cache" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Clear yfinance temp
-Remove-Item -Path "$env:LOCALAPPDATA\Temp\yfinance*" -Recurse -Force -ErrorAction SilentlyContinue
-
-Write-Host "Cache cleared!" -ForegroundColor Green
-```
-
-Run with:
-```powershell
-powershell -ExecutionPolicy Bypass -File clear_cache.ps1
-```
-
-## 📱 How to Use
-
-### 1. Select Filters (Sidebar)
-- **Cap Type**: Large Cap / Mid Cap / Small Cap
-- **Sector**: Choose industries (Finance, IT, Pharma, etc.)
-- **Technical Filters**: Adjust P/E, RSI, Volume thresholds
-- **Target/Stop Loss**: Set your risk parameters
-
-### 2. Scan Stocks
-- Adjust the "Stocks to Scan" slider (50-500)
-- Click anywhere on the page to trigger a rescan
-- Enable auto-refresh for continuous monitoring
-
-### 3. Review Results
-- **Filtered Results Table**: Shows all matching stocks
-- **Top 5 Expert Picks**: Highlighted buy recommendations
-- **Detailed Analysis**: Expand any stock for charts
-
-### 4. Analyze Charts
-- **Price + SMA**: Price movement with 20 & 50 day moving averages
-- **MACD**: Trend momentum indicator
-- **RSI**: Overbought/oversold signals
+3. **Detailed Analysis** (Expand each stock)
+   - **📥 BUY TIMING**: Entry Type, Recommendation, Confidence, Buy Zone
+   - **📤 SELL TIMING**: Signal, Priority, Stop Loss, Risk/Share
+   - **🎯 TARGETS**: Target 1, Target 2, R:R Ratio
+   - **GTT TARGETS** (for NEAR BREAKOUT): GTT Price, T1, T2
 
 ## 📸 Sample Data
 
-### Main Dashboard
+### Classic Screener Results
 ```
-Rank | Ticker | Sector     | Cap      | Price  | P/E  | Vol   | RSI | MACD | Score | Rec
------|--------|------------|----------|--------|------|-------|-----|------|-------|-------------
-1    | COFORGE| IT         | Large Cap| ₹1,368 | 20.7 | 2.24x | 58  | 🟢   | 8     | STRONG BUY
-2    | ACC    | Cement     | Mid Cap  | ₹1,392 | 11.7 | 2.15x | 39  | 🟢   | 8     | STRONG BUY
-3    | HDFCBANK| Finance   | Large Cap| ₹781   | 12.4 | 1.04x | 44  | 🟢   | 6     | STRONG BUY
-4    | COALINDIA| Metals   | Large Cap| ₹456   | 7.9  | 1.22x | 60  | 🟢   | 6     | STRONG BUY
-5    | BRITANNIA| FMCG     | Large Cap| ₹5,520 | 40.9 | 5.76x | 41  | 🔴   | 6     | STRONG BUY
+Rank | Ticker | Sector    | Cap      | Price  | P/E  | Vol   | RSI | MACD | Score | Rec
+-----|--------|-----------|----------|--------|------|-------|-----|------|-------|-------------
+1    | COFORGE| IT        | Large Cap| ₹1,368 | 20.7 | 2.24x | 58  | 🟢   | 8     | STRONG BUY
+2    | ACC    | Cement    | Mid Cap  | ₹1,392 | 11.7 | 2.15x | 39  | 🟢   | 8     | STRONG BUY
+3    | HDFCBANK| Finance  | Large Cap| ₹781   | 12.4 | 1.04x | 44  | 🟢   | 6     | STRONG BUY
 ```
 
-### Technical Indicators Included
-- **RSI (14)**: Relative Strength Index
-- **MACD**: Moving Average Convergence Divergence
-- **SMA 20/50/200**: Simple Moving Averages
-- **Volume Ratio**: Current volume vs 20-day average
-- **52-Week Range**: Low and High prices
+### Momentum Screener Results
+```
+Rank | Ticker | Signal        | Price  | Score | Buy Zone    | Stop   | T1     | T2     | R:R
+-----|--------|---------------|--------|-------|-------------|--------|--------|--------|----
+1    | RELIANCE| BREAKOUT    | ₹1,250 | 11/11 | 1250-1260   | ₹1,230 | ₹1,285 | ₹1,345 | 1.5:1
+2    | TCS     | NEAR BREAKOUT| ₹3,800 | 8/11 | 3780-3820   | ₹3,720 | ₹3,890 | ₹4,050 | 1.5:1
+```
 
-### Recommendation System
+### Recommendation System (Classic Mode)
 - **STRONG BUY**: Score 7+ (Strong fundamentals + bullish technicals)
 - **BUY**: Score 5-6 (Good opportunity)
 - **HOLD**: Score 3-4 (Neutral)
 - **WAIT**: Score <3 (Not recommended)
 
+### Momentum Scoring System
+- **Regime OK** (Uptrend + Golden Cross + Base Rising): +3 points
+- **ATR OK** (1.5% - 5%): +2 points
+- **Fresh Breakout**: +5 points
+- **Near Breakout**: +3 points
+- **Volume > 2x avg**: +1 point
+
 ## 📁 Project Structure
 
 ```
 stockscreener/
-├── app.py              # Main Streamlit application
-├── requirements.txt    # Python dependencies
-├── CLAUDE.md           # AI project notes
-├── README.md           # Project documentation
-├── .gitignore          # Git ignore rules
-└── test_yfinance.py    # Test script for API
+├── app.py                   # Main Streamlit application (Unified)
+├── swing_trade_screener.py  # Standalone momentum screener (legacy)
+├── requirements.txt         # Python dependencies
+├── CLAUDE.md               # AI project notes
+├── README.md               # Project documentation
+├── .gitignore              # Git ignore rules
+├── nifty200_momentum.pine  # Pine Script reference
+└── test_yfinance.py        # Test script for API
+```
+
+## 🧹 Clearing Cache
+
+### Method 1: In-App
+1. Click the three dots (⋮) in the top-right corner
+2. Click "Clear cache"
+
+### Method 2: Restart Server
+```bash
+# Stop the current server (Ctrl + C)
+# Then restart:
+streamlit run app.py --server.port 8501
+```
+
+### Method 3: Clear Python Cache
+**Windows (PowerShell):**
+```powershell
+Get-ChildItem -Recurse -Directory -Filter "__pycache__" | Remove-Item -Recurse -Force
+Get-ChildItem -Recurse -Filter "*.pyc" | Remove-Item -Force
+```
+
+**Mac/Linux:**
+```bash
+find . -type d -name "__pycache__" -exec rm -rf {} +
+find . -name "*.pyc" -delete
 ```
 
 ## ⚠️ Disclaimer
