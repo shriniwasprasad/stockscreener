@@ -1196,11 +1196,25 @@ else:
     # Results Table
     if filtered:
         st.markdown("### 📋 Results Table")
+        # Helper function for recommendation
+        def get_momentum_rec(score):
+            if score >= 8:
+                return "STRONG BUY"
+            elif score >= 6:
+                return "BUY"
+            elif score >= 4:
+                return "HOLD"
+            else:
+                return "WAIT"
         df = pd.DataFrame([{
             'Rank': i+1,
             'Ticker': r['ticker'],
             'Signal': r['pattern'] if r.get('pattern') else 'N/A',
             'Price': f"₹{r['current_price']:.2f}",
+            'Recommendation': get_momentum_rec(r['momentum_score']),
+            'Sector': r['sector'],
+            'Cap': r['cap'],
+            'GTT Entry': f"₹{r['high_52w']:.2f}",
             'Score': f"{r['momentum_score']}/{r['max_score']}",
             'Buy Zone': f"₹{r['buy_zone_low']:.0f}-{r['buy_zone_high']:.0f}",
             'Stop': f"₹{r['stop_loss']:.2f}",
